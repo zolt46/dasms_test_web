@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>탄약 현황</title>
+    <style>
+        /* 기본 스타일 */
+        .section-title {
+            color: var(--active-menu-item); /* 초록색 강조 */
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--brown-accent);
+        }
+
+        p {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* resources_firearm.html, resources_ammo.html, resources_person.html, management_breakdown.html 에 적용 */
+        .table-container-scroll {
+            width: 100%; /* 부모 요소의 전체 너비 사용 */
+            /* max-width: 1400px; /* 필요하다면, 특정 최대 너비를 지정하여 너무 넓어지는 것을 방지 */
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            min-width: 1200px; /* 테이블 최소 너비 조정 (resources_firearm보다 컬럼 수가 적으므로 약간 늘림) */
+            border-collapse: collapse;
+            color: var(--text-color);
+            font-size: 0.9em; /* 테이블 전체 폰트 크기 감소 */
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 8px; /* 패딩 감소 */
+            text-align: left;
+            white-space: nowrap; /* 내용이 길어도 줄바꿈되지 않도록 (가로 스크롤 유도) */
+        }
+        th {
+            background-color: var(--sidebar-bg);
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        /* 각 컬럼의 최소 너비를 조정하여 더 압축적으로 만듭니다. */
+        th:nth-child(1), td:nth-child(1) { min-width: 100px; } /* 탄약종류 */
+        th:nth-child(2), td:nth-child(2) { min-width: 80px; }  /* 탄약구분 */
+        th:nth-child(3), td:nth-child(3) { min-width: 60px; text-align: center;}  /* 수량 */
+        th:nth-child(4), td:nth-child(4) { min-width: 100px; } /* 보관장소 */
+        th:nth-child(5), td:nth-child(5) { min-width: 80px; }  /* 보관상태 */
+        th:nth-child(6), td:nth-child(6) { min-width: 100px; } /* 보급일자 */
+        th:nth-child(7), td:nth-child(7) { min-width: 100px; } /* 소비일자 */
+        th:nth-child(8), td:nth-child(8) { min-width: 80px; }  /* 보급및소비 */
+        th:nth-child(9), td:nth-child(9) { min-width: 100px; } /* 사유 */
+        th:nth-child(10), td:nth-child(10) { min-width: 150px; } /* 특이사항 */
+
+        tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h3 class="section-title">📦 탄약 현황</h3>
+    <p>현재 부대의 탄약 보유 및 사용 현황을 관리합니다.</p>
+
+    <div class="table-container-scroll">
+        <table id="ammoTable">
+            <thead>
+                <tr>
+                    <th>탄약종류</th>
+                    <th>탄약구분</th>
+                    <th>수량</th>
+                    <th>보관장소</th>
+                    <th>보관상태</th>
+                    <th>보급일자</th>
+                    <th>소비일자</th>
+                    <th>보급및소비</th>
+                    <th>사유</th>
+                    <th>특이사항</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>5.56mm 소총탄</td>
+                    <td>실탄</td>
+                    <td>15000</td>
+                    <td>탄약고 A</td>
+                    <td>정상</td>
+                    <td>2025-01-10</td>
+                    <td></td>
+                    <td>보급</td>
+                    <td>정기 보급</td>
+                    <td>이상 없음</td>
+                </tr>
+                <tr>
+                    <td>5.56mm 소총탄</td>
+                    <td>경계용</td>
+                    <td>2000</td>
+                    <td>총기함1</td>
+                    <td>삽탄</td>
+                    <td>2025-07-01</td>
+                    <td></td>
+                    <td>불출</td>
+                    <td>경계 근무</td>
+                    <td>탄알집 100개 삽탄 완료</td>
+                </tr>
+                <tr>
+                    <td>9mm 권총탄</td>
+                    <td>실탄</td>
+                    <td>5000</td>
+                    <td>탄약고 B</td>
+                    <td>정상</td>
+                    <td>2025-03-01</td>
+                    <td></td>
+                    <td>보급</td>
+                    <td>정기 보급</td>
+                    <td>이상 없음</td>
+                </tr>
+                <tr>
+                    <td>9mm 권총탄</td>
+                    <td>훈련용</td>
+                    <td>1000</td>
+                    <td>훈련장 탄약고</td>
+                    <td>소비 완료</td>
+                    <td>2025-06-20</td>
+                    <td>2025-06-21</td>
+                    <td>소비</td>
+                    <td>사격 훈련</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>K201 유탄</td>
+                    <td>실탄</td>
+                    <td>150</td>
+                    <td>탄약고 A</td>
+                    <td>정상</td>
+                    <td>2024-12-05</td>
+                    <td></td>
+                    <td>보급</td>
+                    <td>정기 보급</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>M18 연막탄</td>
+                    <td>훈련용</td>
+                    <td>50</td>
+                    <td>훈련장 탄약고</td>
+                    <td>소비 완료</td>
+                    <td>2025-07-05</td>
+                    <td>2025-07-05</td>
+                    <td>소비</td>
+                    <td>전술 훈련</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>5.56mm 소총탄</td>
+                    <td>공포탄</td>
+                    <td>500</td>
+                    <td>탄약고 C</td>
+                    <td>정상</td>
+                    <td>2025-05-15</td>
+                    <td></td>
+                    <td>보급</td>
+                    <td>정기 보급</td>
+                    <td></td>
+                </tr>
+                 <tr>
+                    <td>5.56mm 소총탄</td>
+                    <td>실탄</td>
+                    <td>500</td>
+                    <td>총기함2</td>
+                    <td>삽탄</td>
+                    <td>2025-07-15</td>
+                    <td></td>
+                    <td>불출</td>
+                    <td>대규모 훈련 지원</td>
+                    <td>탄알집 25개 삽탄 완료</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+    // 이 스크립트는 필요에 따라 데이터를 로드하고 저장하는 함수를 포함할 수 있습니다.
+    // 현재는 정적 데이터이므로 특별한 동작은 하지 않습니다.
+    function saveAllData() {
+        const rows = document.querySelectorAll("table tbody tr");
+        const data = [];
+
+        rows.forEach(row => {
+            data.push({
+                ammo_name: row.cells[0].textContent.trim(),
+                ammo_category: row.cells[1].textContent.trim(),
+                quantity: parseInt(row.cells[2].textContent.trim()) || 0,
+                location: row.cells[3].textContent.trim(),
+                condition: row.cells[4].textContent.trim(),
+                supplied_at: row.cells[5].textContent.trim() || null,
+                consumed_at: row.cells[6].textContent.trim() || null,
+                supply_type: row.cells[7].textContent.trim(),
+                reason: row.cells[8].textContent.trim(),
+                notes: row.cells[9].textContent.trim()
+            });
+        });
+
+        console.log("저장할 탄약 데이터:", data);
+        alert("데이터가 콘솔에 기록되었습니다. (실제 저장 로직 필요)");
+        // 실제 애플리케이션에서는 이 데이터를 서버로 전송합니다.
+        /*
+        fetch('/api/ammo', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log('Success:', result);
+            alert('데이터가 성공적으로 저장되었습니다!');
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert('데이터 저장 중 오류가 발생했습니다.');
+        });
+        */
+    }
+    </script>
+</body>
+</html>

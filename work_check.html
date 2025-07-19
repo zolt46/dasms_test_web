@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>근무 시간표 보기</title>
+    <style>
+        /* 변수 정의 (main_page.html에서 상속 또는 동일하게 정의 필요) */
+        :root {
+            --body-bg: #1F2B24;
+            --main-content-bg: #2F3B33;
+            --text-color: #E6E6E6;
+            --sidebar-bg: #26362C;
+            --sidebar-hover: #3A4A3F;
+            --active-menu-item: #4C9A2A;
+            --border-color: #4A5C50;
+            --brown-accent: #7D5A3D;
+            --brown-text-contrast: #F0E6D2;
+        }
+
+        body { /* main_page.html의 .tab-content 배경과 일치 */
+            background-color: var(--main-content-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95em;
+            padding: 0;
+            margin: 0;
+        }
+
+        .section-title {
+            color: var(--active-menu-item); /* 초록색 강조 */
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title::before {
+            content: '🗓️ '; /* 이모지 */
+            margin-right: 8px;
+            color: var(--brown-accent);
+        }
+
+        p {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* 컨트롤 영역 */
+        .controls-container {
+            background-color: var(--sidebar-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: 100%; /* 부모 너비를 최대한 활용 */
+            max-width: 900px; /* 너무 넓어지는 것을 방지 (조정 가능) */
+            box-sizing: border-box;
+        }
+
+        .controls-container label {
+            color: var(--text-color);
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .controls-container input[type="date"] {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            flex-grow: 1;
+            max-width: 180px; /* 날짜 입력 필드 최대 너비 */
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .btn.submit-btn {
+            background-color: var(--active-menu-item);
+            color: white;
+        }
+
+        .btn.submit-btn:hover {
+            background-color: #3a7a20;
+        }
+
+        /* 테이블 컨테이너 */
+        .table-container-scroll {
+            overflow-x: auto; /* 가로 스크롤이 필요한 경우 */
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            width: 100%; /* 부모 너비를 최대한 활용 */
+            max-width: 100%; /* 너비를 꽉 채우도록. (조정 가능) */
+            background-color: var(--sidebar-bg); /* 테이블 배경색 */
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            min-width: 900px; /* 테이블 최소 너비 (컬럼 수에 따라 조정) */
+            border-collapse: collapse;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: center;
+            vertical-align: middle;
+            word-break: keep-all;
+            white-space: nowrap;
+        }
+
+        th {
+            background-color: var(--sidebar-hover);
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        tbody tr:nth-child(even) {
+            background-color: #2a3a31; /* 약간 다른 배경색으로 가독성 향상 */
+        }
+
+        tbody tr:hover {
+            background-color: var(--sidebar-hover);
+        }
+    </style>
+</head>
+<body>
+    <h3 class="section-title">🗓️ 근무 시간표 보기</h3>
+    <p>선택한 일자의 근무 시간표를 조회하고 확인할 수 있습니다.</p>
+
+    <div class="controls-container">
+        <label for="selectDutyDate">조회할 근무 일자 선택:</label>
+        <input type="date" id="selectDutyDate">
+        <button id="loadScheduleBtn" class="btn submit-btn small-btn">시간표 조회</button>
+    </div>
+
+    <div class="table-container-scroll">
+        <table class="duty-schedule-table">
+            <thead>
+                <tr>
+                    <th>근무 일자</th>
+                    <th>근무 교대조</th>
+                    <th>근무 장소</th>
+                    <th>근무 시간</th>
+                    <th>근무 인원 1</th>
+                    <th>근무 인원 2</th>
+                    <th>보고 특이사항</th>
+                </tr>
+            </thead>
+            <tbody id="dutyViewTableBody">
+                </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const selectDutyDate = document.getElementById('selectDutyDate');
+            const loadScheduleBtn = document.getElementById('loadScheduleBtn');
+            const dutyViewTableBody = document.getElementById('dutyViewTableBody');
+
+            // 임시 데이터 (실제로는 서버에서 불러와야 합니다)
+            const dutyScheduleData = [
+                {
+                    dutyDate: '2025-07-19',
+                    dutyShift: '1교대 (00:00 ~ 08:00)',
+                    dutyLocation: '정문',
+                    dutyTime: '00:00 ~ 08:00',
+                    personnel1: '김철수 (12-34567890)',
+                    personnel2: '이영희 (13-45678901)',
+                    reportDetails: '특이사항 없음'
+                },
+                {
+                    dutyDate: '2025-07-19',
+                    dutyShift: '2교대 (08:00 ~ 16:00)',
+                    dutyLocation: '후문',
+                    dutyTime: '08:00 ~ 16:00',
+                    personnel1: '박지민 (15-67890123)',
+                    personnel2: '최현우 (16-78901234)',
+                    reportDetails: '순찰 중 민간인 접근 경고 1회'
+                },
+                {
+                    dutyDate: '2025-07-20',
+                    dutyShift: '1교대 (00:00 ~ 08:00)',
+                    dutyLocation: '탄약고',
+                    dutyTime: '00:00 ~ 08:00',
+                    personnel1: '정민준 (17-55556666)',
+                    personnel2: '강하늘 (19-23456789)',
+                    reportDetails: '특이사항 없음'
+                },
+                {
+                    dutyDate: '2025-07-20',
+                    dutyShift: '2교대 (08:00 ~ 16:00)',
+                    dutyLocation: '통신실',
+                    dutyTime: '08:00 ~ 16:00',
+                    personnel1: '윤도현 (05-87654321)',
+                    personnel2: '서지혜 (20-34567890)',
+                    reportDetails: '무전기 이상 확인, 보고 완료'
+                }
+            ];
+
+            // '시간표 조회' 버튼 클릭 이벤트
+            loadScheduleBtn.addEventListener('click', function() {
+                const selectedDate = selectDutyDate.value;
+                if (!selectedDate) {
+                    alert('조회할 근무 일자를 선택해주세요.');
+                    return;
+                }
+
+                const filteredData = dutyScheduleData.filter(item => item.dutyDate === selectedDate);
+
+                dutyViewTableBody.innerHTML = ''; // 기존 테이블 내용 초기화
+
+                if (filteredData.length > 0) {
+                    filteredData.forEach(data => {
+                        const row = dutyViewTableBody.insertRow();
+                        row.insertCell().textContent = data.dutyDate; // 추가된 컬럼
+                        row.insertCell().textContent = data.dutyShift;
+                        row.insertCell().textContent = data.dutyLocation;
+                        row.insertCell().textContent = data.dutyTime;
+                        row.insertCell().textContent = data.personnel1;
+                        row.insertCell().textContent = data.personnel2;
+                        row.insertCell().textContent = data.reportDetails;
+                    });
+                } else {
+                    const row = dutyViewTableBody.insertRow();
+                    const cell = row.insertCell();
+                    cell.colSpan = 7; // 컬럼 수에 맞게 조정
+                    cell.textContent = '선택한 날짜에 해당하는 근무 시간표가 없습니다.';
+                    cell.style.textAlign = 'center';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<h3 class="section-title">📊 재원 변동 내역</h3>
+<p>총기 및 탄약의 불출, 반납, 이동, 보급, 소비 등 모든 변동 이력을 확인할 수 있습니다.</p>
+
+<div class="table-container-scroll">
+    <table>
+        <thead>
+            <tr>
+                <th>날짜 및 시간</th>
+                <th>구분</th>
+                <th>항목</th>
+                <th>세부 내용</th>
+                <th>변동 유형</th>
+                <th>변동량</th>
+                <th>관련 인원</th>
+                <th>장소</th>
+                <th>사유</th>
+                <th>특이사항</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>2025-07-13 14:30</td>
+                <td>총기</td>
+                <td>K2 소총</td>
+                <td>K2-12345</td>
+                <td>불출</td>
+                <td>1</td>
+                <td>홍길동 (병장, 12-34567890)</td>
+                <td>무기고 → 훈련장</td>
+                <td>훈련</td>
+                <td>소총탄 30발 동시 불출</td>
+            </tr>
+            <tr>
+                <td>2025-07-13 16:00</td>
+                <td>총기</td>
+                <td>K2 소총</td>
+                <td>K2-12345</td>
+                <td>반납</td>
+                <td>1</td>
+                <td>홍길동 (병장, 12-34567890)</td>
+                <td>훈련장 → 무기고</td>
+                <td>훈련 복귀</td>
+                <td>이상 없음</td>
+            </tr>
+            <tr>
+                <td>2025-07-12 10:15</td>
+                <td>탄약</td>
+                <td>5.56mm 소총탄</td>
+                <td>실탄</td>
+                <td>소비</td>
+                <td>-100</td>
+                <td>김철수 (상병, 13-45678901)</td>
+                <td>사격장</td>
+                <td>정기 사격 훈련</td>
+                <td>총 5명 참가</td>
+            </tr>
+            <tr>
+                <td>2025-07-11 09:00</td>
+                <td>탄약</td>
+                <td>9mm 권총탄</td>
+                <td>보급</td>
+                <td>보급</td>
+                <td>+500</td>
+                <td>박영희 (하사, 14-56789012)</td>
+                <td>탄약고 A</td>
+                <td>월간 보급</td>
+                <td>군수지원대 확인 완료</td>
+            </tr>
+            <tr>
+                <td>2025-07-10 11:30</td>
+                <td>총기</td>
+                <td>K1 기관단총</td>
+                <td>K1-67890</td>
+                <td>이동</td>
+                <td>-</td>
+                <td>이민수 (일병, 15-67890123)</td>
+                <td>총기함1 → 총기함2</td>
+                <td>정비 이동</td>
+                <td>정비반 확인 후 이동</td>
+            </tr>
+            <tr>
+                <td>2025-07-09 15:00</td>
+                <td>총기</td>
+                <td>K5 권총</td>
+                <td>K5-98765</td>
+                <td>불출 승인</td>
+                <td>-</td>
+                <td>최지훈 (대위, 09-87654321)</td>
+                <td>-</td>
+                <td>불출 신청 (승인)</td>
+                <td>담당관 확인</td>
+            </tr>
+            <tr>
+                <td>2025-07-09 15:30</td>
+                <td>총기</td>
+                <td>K5 권총</td>
+                <td>K5-11223</td>
+                <td>불출 반려</td>
+                <td>-</td>
+                <td>김유리 (중위, 10-21098765)</td>
+                <td>-</td>
+                <td>불출 신청 (반려)</td>
+                <td>동일 총기 기 불출</td>
+            </tr>
+            <tr>
+                <td>2025-07-08 17:45</td>
+                <td>탄약</td>
+                <td>K201 유탄</td>
+                <td>훈련탄</td>
+                <td>소비</td>
+                <td>-5</td>
+                <td>정우진 (병장, 16-78901234)</td>
+                <td>실내 훈련장</td>
+                <td>유탄 발사 훈련</td>
+                <td>수량 정확히 소모</td>
+            </tr>
+            <tr>
+                <td>2025-07-07 08:00</td>
+                <td>총기</td>
+                <td>K2 소총</td>
+                <td>K2-54321</td>
+                <td>불출</td>
+                <td>1</td>
+                <td>한예슬 (상병, 17-89012345)</td>
+                <td>무기고 → 경계 근무지</td>
+                <td>경계 근무</td>
+                <td>총기 및 탄약 이상 없음</td>
+            </tr>
+            <tr>
+                <td>2025-07-07 20:00</td>
+                <td>총기</td>
+                <td>K2 소총</td>
+                <td>K2-54321</td>
+                <td>반납</td>
+                <td>1</td>
+                <td>한예슬 (상병, 17-89012345)</td>
+                <td>경계 근무지 → 무기고</td>
+                <td>근무 복귀</td>
+                <td>총기 오염 심함, 정비 필요</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<style>
+    /* resources_firearm.html, resources_ammo.html, resources_person.html, management_breakdown.html 에 적용 */
+    .table-container-scroll {
+        width: 100%; /* 부모 요소의 전체 너비 사용 */
+        /* max-width: 1400px; /* 필요하다면, 특정 최대 너비를 지정하여 너무 넓어지는 것을 방지 */
+        overflow-x: auto;
+        margin-top: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+    }
+
+    table {
+        width: 100%; /* 너비를 100%로 설정하여 컨테이너에 맞춤 */
+        min-width: 1400px; /* 테이블 최소 너비 지정 (내용이 많을 경우) */
+        border-collapse: collapse;
+        color: var(--text-color);
+        font-size: 0.9em; /* 테이블 전체 폰트 크기 감소 */
+    }
+    th, td {
+        border: 1px solid var(--border-color);
+        padding: 10px; /* 패딩 조정 */
+        text-align: left;
+        white-space: nowrap; /* 내용이 길어도 줄바꿈되지 않도록 (가로 스크롤 유도) */
+    }
+    th {
+        background-color: var(--sidebar-bg);
+        font-weight: bold;
+        position: sticky; /* 헤더 고정 */
+        top: 0;
+        z-index: 10;
+    }
+    /* 각 컬럼의 최소 너비를 조정하여 더 압축적으로 만듭니다. */
+    th:nth-child(1), td:nth-child(1) { min-width: 150px; } /* 날짜 및 시간 */
+    th:nth-child(2), td:nth-child(2) { min-width: 60px; }  /* 구분 */
+    th:nth-child(3), td:nth-child(3) { min-width: 100px; } /* 항목 */
+    th:nth-child(4), td:nth-child(4) { min-width: 120px; } /* 세부 내용 */
+    th:nth-child(5), td:nth-child(5) { min-width: 100px; } /* 변동 유형 */
+    th:nth-child(6), td:nth-child(6) { min-width: 70px; }  /* 변동량 */
+    th:nth-child(7), td:nth-child(7) { min-width: 180px; } /* 관련 인원 */
+    th:nth-child(8), td:nth-child(8) { min-width: 150px; } /* 장소 */
+    th:nth-child(9), td:nth-child(9) { min-width: 120px; } /* 사유 */
+    th:nth-child(10), td:nth-child(10) { min-width: 200px; } /* 특이사항 */
+
+    tr:nth-child(even) {
+        background-color: rgba(0,0,0,0.1); /* 짝수 행 배경색 */
+    }
+
+    /* 반응형 디자인을 위한 작은 화면 처리 (선택 사항) */
+    @media (max-width: 768px) {
+        .table-container-scroll {
+            border-radius: 0;
+        }
+        table {
+            font-size: 0.8em;
+            min-width: unset; /* 작은 화면에서는 최소 너비 제한 해제 */
+        }
+        th, td {
+            padding: 8px 5px;
+        }
+    }
+</style>

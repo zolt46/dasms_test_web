@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>총기 현황</title>
+  <style>
+    /* 기본 스타일 */
+    .section-title {
+        color: var(--active-menu-item); /* 초록색 강조 */
+        margin-bottom: 15px;
+        font-size: 1.8em;
+        border-bottom: 2px solid var(--border-color);
+        padding-bottom: 10px;
+        display: flex;
+        align-items: center;
+    }
+
+    .section-title i {
+        margin-right: 10px;
+        color: var(--brown-accent);
+    }
+
+    p {
+        color: var(--text-color);
+        margin-bottom: 20px;
+        line-height: 1.6;
+    }
+
+    /* resources_firearm.html, resources_ammo.html, resources_person.html, management_breakdown.html 에 적용 */
+    .table-container-scroll {
+        width: 100%; /* 부모 요소의 전체 너비 사용 */
+        /* max-width: 1400px; /* 필요하다면, 특정 최대 너비를 지정하여 너무 넓어지는 것을 방지 */
+        overflow-x: auto;
+        margin-top: 15px;
+        border: 1px solid var(--border-color);
+        border-radius: 5px;
+    }
+
+    table {
+        width: 100%; /* 너비를 100%로 설정하여 컨테이너에 맞춤 */
+        min-width: 1100px; /* 테이블 최소 너비 조정 (필요에 따라 더 줄일 수 있음) */
+        border-collapse: collapse;
+        color: var(--text-color);
+        font-size: 0.9em; /* 테이블 전체 폰트 크기 감소 */
+    }
+    th, td {
+        border: 1px solid var(--border-color);
+        padding: 8px; /* 패딩 감소 */
+        text-align: left;
+        white-space: nowrap; /* 내용이 길어도 줄바꿈되지 않도록 (가로 스크롤 유도) */
+    }
+    th {
+        background-color: var(--sidebar-bg);
+        font-weight: bold;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+    /* 각 컬럼의 최소 너비를 조정하여 더 압축적으로 만듭니다. */
+    th:nth-child(1), td:nth-child(1) { min-width: 70px; } /* 성명 */
+    th:nth-child(2), td:nth-child(2) { min-width: 60px; } /* 계급 */
+    th:nth-child(3), td:nth-child(3) { min-width: 100px; } /* 군번 */
+    th:nth-child(4), td:nth-child(4) { min-width: 80px; }  /* 소속 */
+    th:nth-child(5), td:nth-child(5) { min-width: 80px; }  /* 직책 */
+    th:nth-child(6), td:nth-child(6) { min-width: 80px; }  /* 총기종류 */
+    th:nth-child(7), td:nth-child(7) { min-width: 100px; } /* 총기번호 */
+    th:nth-child(8), td:nth-child(8) { min-width: 100px; } /* 보관장소 */
+    th:nth-child(9), td:nth-child(9) { min-width: 100px; text-align: center; } /* 상태 */
+    th:nth-child(10), td:nth-child(10) { min-width: 80px; } /* 사유 */
+    th:nth-child(11), td:nth-child(11) { min-width: 150px; } /* 특이사항 */
+
+    tr:nth-child(even) {
+        background-color: rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+    <h3 class="section-title">🔫 총기 현황</h3>
+    <p>현재 부대의 총기 보유 및 불출/반납 현황을 관리합니다.</p>
+
+    <div class="table-container-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>성명</th>
+                    <th>계급</th>
+                    <th>군번</th>
+                    <th>소속</th>
+                    <th>직책</th>
+                    <th>총기종류</th>
+                    <th>총기번호</th>
+                    <th>보관장소</th>
+                    <th>상태<br>(반납/불출)</th>
+                    <th>사유</th>
+                    <th>특이사항</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>홍길동</td>
+                    <td>병장</td>
+                    <td>12-34567890</td>
+                    <td>본부중대</td>
+                    <td>소총수</td>
+                    <td>K2 소총</td>
+                    <td>K2-12345</td>
+                    <td>총기함1</td>
+                    <td>불출</td>
+                    <td>훈련</td>
+                    <td>이상 없음</td>
+                </tr>
+                <tr>
+                    <td>김철수</td>
+                    <td>상병</td>
+                    <td>13-45678901</td>
+                    <td>1소대</td>
+                    <td>분대장</td>
+                    <td>K1 기관단총</td>
+                    <td>K1-67890</td>
+                    <td>총기함2</td>
+                    <td>반납</td>
+                    <td>휴가 복귀</td>
+                    <td>개머리판 교체 필요</td>
+                </tr>
+                <tr>
+                    <td>이영희</td>
+                    <td>하사</td>
+                    <td>14-56789012</td>
+                    <td>2소대</td>
+                    <td>부소대장</td>
+                    <td>K5 권총</td>
+                    <td>K5-01010</td>
+                    <td>총기함3</td>
+                    <td>불출</td>
+                    <td>당직 근무</td>
+                    <td>탄창 1개 추가 불출</td>
+                </tr>
+                <tr>
+                    <td>박지민</td>
+                    <td>일병</td>
+                    <td>15-67890123</td>
+                    <td>본부중대</td>
+                    <td>취사병</td>
+                    <td>K2 소총</td>
+                    <td>K2-23456</td>
+                    <td>총기함1</td>
+                    <td>반납</td>
+                    <td>개인 정비</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>최현우</td>
+                    <td>병장</td>
+                    <td>16-78901234</td>
+                    <td>3소대</td>
+                    <td>분대장</td>
+                    <td>K3 기관총</td>
+                    <td>K3-90909</td>
+                    <td>총기함4</td>
+                    <td>보관 중</td>
+                    <td></td>
+                    <td>정기 점검 완료</td>
+                </tr>
+                <tr>
+                    <td>정민준</td>
+                    <td>상병</td>
+                    <td>17-55556666</td>
+                    <td>본부중대</td>
+                    <td>행정병</td>
+                    <td>K2 소총</td>
+                    <td>K2-10101</td>
+                    <td>총기함1</td>
+                    <td>보관 중</td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

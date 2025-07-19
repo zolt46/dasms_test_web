@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>근무 시간표 입력</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Variables for Colors (Inherited/Adapted from Login) */
+        :root {
+            --body-bg: #1F2B24; /* Dark military green */
+            --main-content-bg: #2F3B33; /* Slightly brighter for content area */
+            --text-color: #E6E6E6; /* Light gray for readability */
+            --sidebar-bg: #26362C; /* Darker green for sidebar, distinct */
+            --sidebar-hover: #3A4A3F; /* Lighter sidebar hover */
+            --active-menu-item: #4C9A2A; /* Military green for active state */
+            --border-color: #4A5C50; /* Medium gray for borders/lines */
+            --brown-accent: #7D5A3D; /* Earthy brown for accent */
+            --brown-text-contrast: #F0E6D2; /* Light beige for brown text contrast */
+        }
+
+        body {
+            background-color: var(--main-content-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95em;
+            padding: 20px;
+            margin: 0;
+            display: flex;
+            justify-content: center; /* 폼 컨테이너를 중앙으로 */
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .section-title {
+            color: var(--active-menu-item);
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--brown-accent);
+        }
+
+        p {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .form-container {
+            background-color: var(--sidebar-bg); /* main_page.html의 sidebar-bg와 유사하게 */
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 700px; /* 폼 컨테이너 너비 조정 */
+        }
+
+        .form-container h4 {
+            color: var(--brown-accent);
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+        .form-container h5 {
+            color: var(--brown-accent);
+            font-size: 1.1em;
+            margin-top: 25px;
+            margin-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 3px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-color);
+            font-weight: bold;
+            font-size: 0.95em;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="time"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: rgba(255, 255, 255, 0.08); /* 약간 투명한 배경 */
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none;
+            transition: border-color 0.3s ease, background-color 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="date"]:focus,
+        .form-group input[type="time"]:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--active-menu-item);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-left: 10px; /* 버튼 간 간격 */
+        }
+
+        .submit-btn {
+            background-color: var(--active-menu-item);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            background-color: #3f7d22;
+            transform: translateY(-2px);
+        }
+
+        .reset-btn {
+            background-color: var(--border-color);
+            color: var(--text-color);
+        }
+
+        .reset-btn:hover {
+            background-color: #5a6d63;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+    <div class="content-wrapper">
+        <h3 class="section-title">⏰ 근무 시간표 입력</h3>
+        <p>경계 근무 시간표를 입력하는 페이지입니다. 모든 필수 정보를 정확히 입력해주세요.</p>
+
+        <div class="form-container">
+            <h4>근무 시간표 입력</h4>
+            <form id="dutyScheduleForm">
+                <div class="form-group">
+                    <label for="dutyDate">근무 일자:</label>
+                    <input type="date" id="dutyDate" name="dutyDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="dutyShift">근무 교대조:</label>
+                    <select id="dutyShift" name="dutyShift" required>
+                        <option value="">선택</option>
+                        <option value="1교대">1교대 (00:00 ~ 08:00)</option>
+                        <option value="2교대">2교대 (08:00 ~ 16:00)</option>
+                        <option value="3교대">3교대 (16:00 ~ 24:00)</option>
+                        <option value="추가">추가 근무</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dutyLocation">근무 장소:</label>
+                    <select id="dutyLocation" name="dutyLocation" required>
+                        <option value="">선택</option>
+                        <option value="정문">정문</option>
+                        <option value="후문">후문</option>
+                        <option value="탄약고">탄약고</option>
+                        <option value="유류고">유류고</option>
+                        <option value="PX">PX</option>
+                        <option value="생활관">생활관</option>
+                        <option value="CP">CP</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dutyStartTime">근무 시작 시간:</label>
+                    <input type="time" id="dutyStartTime" name="dutyStartTime" required>
+                </div>
+                <div class="form-group">
+                    <label for="dutyEndTime">근무 종료 시간:</label>
+                    <input type="time" id="dutyEndTime" name="dutyEndTime" required>
+                </div>
+
+                <h5 class="section-divider">근무 인원 (최대 2명)</h5>
+                <div class="form-group">
+                    <label for="dutyPersonnel1Name">인원 1 성명:</label>
+                    <input type="text" id="dutyPersonnel1Name" name="dutyPersonnel1Name" required placeholder="예: 홍길동">
+                </div>
+                <div class="form-group">
+                    <label for="dutyPersonnel1MilitaryId">인원 1 군번:</label>
+                    <input type="text" id="dutyPersonnel1MilitaryId" name="dutyPersonnel1MilitaryId" required pattern="[0-9]{2}-[0-9]{8}" placeholder="예: 12-34567890">
+                </div>
+                <div class="form-group">
+                    <label for="dutyPersonnel2Name">인원 2 성명 (선택):</label>
+                    <input type="text" id="dutyPersonnel2Name" name="dutyPersonnel2Name" placeholder="예: 김철수">
+                </div>
+                <div class="form-group">
+                    <label for="dutyPersonnel2MilitaryId">인원 2 군번 (선택):</label>
+                    <input type="text" id="dutyPersonnel2MilitaryId" name="dutyPersonnel2MilitaryId" pattern="[0-9]{2}-[0-9]{8}" placeholder="예: 13-45678901">
+                </div>
+
+                <h5 class="section-divider">신고 내역</h5>
+                <div class="form-group full-width">
+                    <label for="reportDetails">특이 신고 내역 (선택 사항):</label>
+                    <textarea id="reportDetails" name="reportDetails" rows="3" placeholder="근무 중 특이사항이나 신고 내역을 입력하세요."></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="reportTime">신고 시간 (선택):</label>
+                    <input type="time" id="reportTime" name="reportTime">
+                </div>
+                <div class="form-group">
+                    <label for="reportType">신고 유형 (선택):</label>
+                    <select id="reportType" name="reportType">
+                        <option value="">선택 안 함</option>
+                        <option value="특이사항">특이사항 보고</option>
+                        <option value="상황발생">상황 발생 보고</option>
+                        <option value="인원교체">인원 교체</option>
+                        <option value="장비이상">장비 이상</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn submit-btn">시간표 저장</button>
+                    <button type="reset" class="btn reset-btn">초기화</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

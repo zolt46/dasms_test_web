@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASMS 대시보드</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Variables for Colors (Inherited/Adapted from Login) */
+        :root {
+            --body-bg: #1F2B24; /* Dark military green */
+            --main-content-bg: #2F3B33; /* Slightly brighter for content area */
+            --text-color: #E6E6E6; /* Light gray for readability */
+            --sidebar-bg: #26362C; /* Darker green for sidebar, distinct */
+            --sidebar-hover: #3A4A3F; /* Lighter sidebar hover */
+            --active-menu-item: #4C9A2A; /* Military green for active state */
+            --border-color: #4A5C50; /* Medium gray for borders/lines */
+            --brown-accent: #7D5A3D; /* Earthy brown for accent */
+            --brown-text-contrast: #F0E6D2; /* Light beige for brown text contrast */
+        }
+
+        /* HTML and Body height for proper flexbox behavior */
+        html, body {
+            height: 100%; /* Ensure html and body take full viewport height */
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            display: flex; /* Use flexbox for main layout */
+            min-height: 100vh; /* Full viewport height */
+            margin: 0;
+            overflow: hidden; /* 전체 페이지 스크롤 방지, 내부 컨텐츠 스크롤 */
+            font-size: 0.95em; /* 전체적인 기본 폰트 크기 미세 조정 */
+        }
+
+        /* --- Sidebar (Left Menu) Styles --- */
+        .sidebar {
+            width: 220px;
+            background-color: var(--sidebar-bg);
+            padding: 15px 0;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+            overflow-y: auto; /* 사이드바 내용이 길어질 경우 스크롤 */
+        }
+
+        .sidebar .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 0 15px;
+        }
+
+        .sidebar .logo h1 {
+            font-size: 1.8em;
+            color: var(--text-color);
+            margin-bottom: 3px;
+        }
+
+        .sidebar .logo p {
+            font-size: 0.8em;
+            color: var(--text-color);
+            opacity: 0.7;
+        }
+
+        .sidebar nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar nav ul li {
+            margin-bottom: 3px;
+        }
+
+        .sidebar nav ul li a {
+            display: block;
+            padding: 10px 15px;
+            color: var(--text-color);
+            text-decoration: none;
+            font-size: 1em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            position: relative;
+        }
+
+        .sidebar nav ul li a:hover {
+            background-color: var(--sidebar-hover);
+        }
+
+        /* Active menu item styling */
+        .sidebar nav ul li a.active {
+            background-color: var(--active-menu-item);
+            font-weight: bold;
+            color: white;
+        }
+
+        .sidebar nav ul li a.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: var(--brown-accent);
+            border-radius: 0 3px 3px 0;
+        }
+
+        /* Sub-menu styling */
+        .sidebar nav ul ul {
+            padding-left: 15px;
+            background-color: rgba(0, 0, 0, 0.1);
+            margin-top: 3px;
+            margin-bottom: 3px;
+        }
+        /* 서브 메뉴 li에만 보더를 줘서 레이아웃 흔들림 방지 */
+        .sidebar nav ul ul li {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .sidebar nav ul ul li:last-child {
+            border-bottom: none;
+        }
+
+
+        .sidebar nav ul ul li a {
+            padding: 8px 15px 8px 30px;
+            font-size: 0.9em;
+        }
+
+        .sidebar nav ul ul li a:hover {
+             background-color: var(--sidebar-hover);
+        }
+         .sidebar nav ul ul li a.active {
+            background-color: var(--active-menu-item);
+            color: white;
+        }
+
+        /* --- Main Content Area Styles --- */
+        .main-content {
+            flex-grow: 1;
+            background-color: var(--main-content-bg);
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* main-content 자체는 스크롤바가 생기지 않도록, 내부 tab-container가 스크롤을 담당 */
+        }
+
+        .main-header {
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .main-header h2 {
+            font-size: 1.5em;
+            color: var(--brown-accent);
+        }
+        .main-header .user-info {
+            font-size: 0.9em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+
+        /* Tab Container (for dynamic content) */
+        .tab-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--body-bg);
+            border-radius: 8px;
+            overflow: hidden; /* 탭 콘텐츠 스크롤은 .tab-content가 담당 */
+            border: 1px solid var(--border-color);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.3);
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--sidebar-bg);
+            flex-shrink: 0; /* 탭 헤더가 줄어들지 않도록 */
+            overflow-x: auto; /* 탭이 많아질 경우 가로 스크롤 */
+            white-space: nowrap; /* 탭 버튼들이 한 줄에 표시되도록 */
+        }
+
+        .tab-button {
+            padding: 10px 15px;
+            background-color: var(--sidebar-bg);
+            color: var(--text-color);
+            border: none;
+            border-right: 1px solid var(--border-color);
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            display: flex;
+            align-items: center;
+            position: relative;
+            flex-shrink: 0; /* 탭 버튼이 줄어들지 않도록 */
+        }
+
+        .tab-button:last-child {
+            border-right: none;
+        }
+
+        .tab-button.active {
+            background-color: var(--main-content-bg);
+            color: var(--text-color);
+            font-weight: bold;
+            border-bottom: 2px solid var(--brown-accent);
+            margin-bottom: -1px;
+        }
+
+        .tab-button:hover:not(.active) {
+            background-color: var(--sidebar-hover);
+        }
+
+        .tab-button .tab-title {
+            margin-right: 8px;
+        }
+
+        .tab-button .close-tab {
+            background-color: transparent;
+            border: none;
+            color: var(--text-color);
+            font-size: 1em;
+            cursor: pointer;
+            padding: 0 4px;
+            margin-left: 4px;
+            line-height: 1;
+            opacity: 0.7;
+            transition: opacity 0.2s ease, color 0.2s ease;
+        }
+
+        .tab-button .close-tab:hover {
+            opacity: 1;
+            color: #ff6b6b;
+        }
+
+        .tab-content {
+            flex-grow: 1; /* 남은 공간을 모두 차지 */
+            padding: 15px;
+            background-color: var(--main-content-bg);
+            overflow-y: auto; /* 이 부분이 중요: 내용이 넘칠 경우 스크롤 */
+            color: var(--text-color);
+            font-size: 1em;
+            display: block; /* Flexbox 대신 block으로 변경 */
+        }
+
+        /* .page-content도 약간 조정 */
+        .page-content {
+            display: none;
+            width: 100%; /* 부모의 전체 너비 사용 */
+            /* height: 100%; /* 이 속성을 부여하면 내부 콘텐츠가 잘릴 수 있으므로 주의 */
+        }
+
+        .page-content.active {
+            display: block; /* 활성화된 페이지는 보이게 */
+        }
+
+        /* Military-inspired elements */
+        .section-title {
+            font-size: 1.3em;
+            color: var(--brown-accent);
+            margin-bottom: 10px;
+            padding-bottom: 4px;
+            border-bottom: 2px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        .section-title::before {
+            content: '🔗 ';
+            margin-right: 8px;
+            color: var(--text-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <h1>DASMS ROK</h1>
+            <p>국방 스마트 관리 시스템</p>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="#" data-page="관리" class="main-menu-item">관리</a>
+                    <ul>
+                        <li><a href="#" data-page-id="management_return" class="sub-menu-item">반납 신청</a></li>
+                        <li><a href="#" data-page-id="management_dispatch" class="sub-menu-item">불출 신청</a></li>
+                        </ul>
+                </li>
+                <li><a href="#" data-page="근무" class="main-menu-item">근무</a>
+                    <ul>
+                        <li><a href="#" data-page-id="work_check" class="sub-menu-item">근무 시간표 조회</a></li>
+                        </ul>
+                </li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="main-header">
+            <h2>대시보드</h2>
+            <div class="user-info">일반 사용자님 환영합니다!</div>
+        </div>
+
+        <div class="tab-container">
+            <div class="tabs-header" id="tabsHeader">
+                </div>
+            <div class="tab-content" id="tabContent">
+                <div class="page-content" id="default-page">
+                    <h3 class="section-title">DASMS 오신 것을 환영합니다!</h3>
+                    <p>좌측 메뉴에서 원하는 항목을 선택하여 상세 정보를 확인하세요.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', async function() {
+        const tabsHeader = document.getElementById('tabsHeader');
+        const tabContent = document.getElementById('tabContent');
+        const defaultPage = document.getElementById('default-page');
+        const openTabs = {}; // Track open tabs: { pageId: { button, content } }
+
+        // 페이지 내용을 동적으로 로드하는 함수
+        async function loadPageContent(pageId) {
+            try {
+                const response = await fetch(`${pageId}.html`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const htmlContent = await response.text();
+                return htmlContent;
+            } catch (error) {
+                console.error('Error fetching page content:', error);
+                return `<p>Error loading ${pageId}: ${error.message}</p>`;
+            }
+        }
+
+        async function appendAndExecuteContent(targetElement, htmlString) {
+            targetElement.innerHTML = ''; // 기존 콘텐츠 초기화
+
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlString, 'text/html');
+
+            // 본문 콘텐츠를 targetElement에 추가
+            Array.from(doc.body.children).forEach(node => {
+                // <script> 태그는 제외하고 HTML만 먼저 추가
+                if (node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
+                    targetElement.appendChild(node.cloneNode(true));
+                }
+            });
+
+            // 스타일 태그를 찾아서 복사 후 헤드에 추가
+            Array.from(doc.querySelectorAll('style')).forEach(oldStyle => {
+                const newStyle = document.createElement('style');
+                newStyle.textContent = oldStyle.textContent;
+                document.head.appendChild(newStyle);
+            });
+
+            // 스크립트 요소를 찾아 새로 생성하고 실행
+            Array.from(doc.querySelectorAll('script')).forEach(oldScript => {
+                const newScript = document.createElement('script');
+                if (oldScript.src) {
+                    newScript.src = oldScript.src;
+                    newScript.async = false; // 순서대로 실행되도록 async false
+                    newScript.onload = () => {
+                        console.log(`Script loaded: ${newScript.src}`);
+                        // 스크립트 로드 후 해당 페이지의 초기화 함수가 있다면 호출
+                        if (window[`init${capitalizeFirstLetter(targetElement.dataset.pageId)}`]) {
+                            window[`init${capitalizeFirstLetter(targetElement.dataset.pageId)}`]();
+                        }
+                    };
+                    newScript.onerror = () => {
+                        console.error(`Error loading script: ${newScript.src}`);
+                    };
+                } else {
+                    newScript.textContent = oldScript.textContent;
+                    // 인라인 스크립트의 경우 바로 실행되도록 추가
+                    try {
+                        const scriptFn = new Function(newScript.textContent);
+                        scriptFn();
+                        // 인라인 스크립트 실행 후 해당 페이지의 초기화 함수가 있다면 호출
+                        if (targetElement.dataset.pageId && window[`init${capitalizeFirstLetter(targetElement.dataset.pageId)}`]) {
+                            window[`init${capitalizeFirstLetter(targetElement.dataset.pageId)}`]();
+                        }
+                    } catch (e) {
+                        console.error("Error executing inline script:", e);
+                    }
+                }
+                targetElement.appendChild(newScript);
+            });
+        }
+        // 헬퍼 함수: 문자열 첫 글자 대문자로 (이 함수도 main_page.html 스크립트에 있어야 합니다)
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        // 헬퍼 함수: 문자열 첫 글자 대문자로
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+
+        function activateTab(pageId) {
+            // 모든 탭 버튼과 콘텐츠 비활성화
+            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+            document.querySelectorAll('.page-content').forEach(content => content.classList.remove('active'));
+
+            // 클릭된 탭 버튼과 콘텐츠 활성화
+            const activeTabButton = document.querySelector(`.tab-button[data-page-id="${pageId}"]`);
+            const activeTabContent = document.querySelector(`.page-content[data-page-id="${pageId}"]`);
+
+            if (activeTabButton) {
+                activeTabButton.classList.add('active');
+            }
+            if (activeTabContent) {
+                activeTabContent.classList.add('active');
+            }
+
+            // 기본 페이지가 활성화되어 있으면 비활성화
+            if (defaultPage && defaultPage.classList.contains('active') && pageId !== 'default-page') {
+                defaultPage.classList.remove('active');
+            }
+
+            // 활성화된 탭의 콘텐츠가 스크롤이 필요하면 최상단으로 스크롤
+            if (activeTabContent) {
+                tabContent.scrollTop = 0; // tabContent 스크롤 위치 초기화
+            }
+        }
+
+        function closeTab(pageId) {
+            if (openTabs[pageId]) {
+                openTabs[pageId].button.remove();
+                openTabs[pageId].content.remove();
+                delete openTabs[pageId];
+
+                // 닫힌 탭이 현재 활성화된 탭이었다면, 다른 탭을 활성화하거나 기본 페이지를 활성화
+                if (document.querySelector('.tab-button.active') === null) {
+                    const remainingTabs = Object.keys(openTabs);
+                    if (remainingTabs.length > 0) {
+                        activateTab(remainingTabs[remainingTabs.length - 1]); // 마지막으로 열린 탭 활성화
+                    } else {
+                        // 모든 탭이 닫혔을 때 default-page 활성화
+                        if (defaultPage) {
+                            defaultPage.classList.add('active');
+                            // 기본 페이지가 탭 버튼 목록에 없으므로 별도 처리
+                            document.querySelectorAll('.tab-button').forEach(button => button.classList.remove('active'));
+                        }
+                    }
+                }
+            }
+        }
+
+        // 사이드바 링크 클릭 이벤트
+        const sidebarLinks = document.querySelectorAll('.sidebar nav ul li a');
+        sidebarLinks.forEach(link => {
+            link.addEventListener('click', async function(event) {
+                event.preventDefault();
+
+                if (this.classList.contains('main-menu-item')) {
+                    const subMenu = this.nextElementSibling;
+                    // 하위 메뉴가 존재하고 UL 태그인지 확인
+                    if (subMenu && subMenu.tagName === 'UL') {
+                        // 현재 탭의 상태를 토글
+                        subMenu.style.display = subMenu.style.display === 'block' ? 'none' : 'block';
+                    }
+                    // 메인 메뉴 아이템 중 data-page-id가 없는 경우 (상위 카테고리인 경우)는 탭을 열지 않음
+                    if (!this.dataset.pageId) {
+                        return;
+                    }
+                }
+
+                const pageId = this.dataset.pageId;
+                // pageId가 없거나 '#'이면 아무것도 하지 않음 (예: 상위 메뉴 클릭 시)
+                if (!pageId || pageId === '#') {
+                    return;
+                }
+                const pageName = this.textContent.trim();
+
+                if (!openTabs[pageId]) {
+                    // 새 탭 버튼 생성
+                    const tabButton = document.createElement('button');
+                    tabButton.classList.add('tab-button');
+                    tabButton.dataset.pageId = pageId;
+
+                    const tabTitleSpan = document.createElement('span');
+                    tabTitleSpan.classList.add('tab-title');
+                    tabTitleSpan.textContent = pageName;
+                    tabButton.appendChild(tabTitleSpan);
+
+                    const closeButton = document.createElement('span');
+                    closeButton.classList.add('close-tab');
+                    closeButton.textContent = '✖';
+                    closeButton.addEventListener('click', function(event) {
+                        event.stopPropagation(); // 탭 버튼 클릭 이벤트가 발생하지 않도록 중단
+                        closeTab(pageId);
+                    });
+                    tabButton.appendChild(closeButton);
+
+                    tabButton.addEventListener('click', () => activateTab(pageId));
+                    tabsHeader.appendChild(tabButton);
+
+                    // 새 페이지 콘텐츠 영역 생성
+                    const contentDiv = document.createElement('div');
+                    contentDiv.classList.add('page-content');
+                    contentDiv.dataset.pageId = pageId; // data-page-id 설정
+
+                    // 콘텐츠 로드 및 스크립트 실행
+                    const fetchedHtml = await loadPageContent(pageId);
+                    appendAndExecuteContent(contentDiv, fetchedHtml);
+
+                    tabContent.appendChild(contentDiv);
+
+                    openTabs[pageId] = { button: tabButton, content: contentDiv };
+                }
+                activateTab(pageId);
+            });
+        });
+
+        // 페이지 로드 시 기본 페이지 활성화
+        activateTab('default-page');
+
+        // 초기 로드 시 모든 하위 메뉴 숨김
+        document.querySelectorAll('.sidebar nav ul ul').forEach(subMenu => {
+            subMenu.style.display = 'none';
+        });
+    });
+</script>
+</body>
+</html>

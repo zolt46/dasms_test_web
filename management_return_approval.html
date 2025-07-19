@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>반납 신청 이력 확인</title>
+    <style>
+        /* 변수 정의 (main_page.html에서 상속 또는 동일하게 정의 필요) */
+        :root {
+            --body-bg: #1F2B24;
+            --main-content-bg: #2F3B33;
+            --text-color: #E6E6E6;
+            --sidebar-bg: #26362C;
+            --sidebar-hover: #3A4A3F;
+            --active-menu-item: #4C9A2A;
+            --border-color: #4A5C50;
+            --brown-accent: #7D5A3D;
+            --brown-text-contrast: #F0E6D2;
+        }
+
+        body {
+            background-color: var(--main-content-bg);
+            color: var(--text-color);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 0.95em;
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: var(--body-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            color: var(--text-color);
+        }
+
+        .section-title {
+            color: var(--active-menu-item);
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            color: #ccc;
+            margin-bottom: 20px;
+        }
+
+        .filter-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .filter-section label {
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .filter-section input[type="date"],
+        .filter-section select {
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background-color: #3A4A3F;
+            color: var(--brown-text-contrast);
+            font-size: 1em;
+        }
+
+        .btn {
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .load-btn {
+            background-color: var(--brown-accent);
+            color: var(--brown-text-contrast);
+        }
+        .load-btn:hover {
+            background-color: #6a4c33;
+            transform: translateY(-1px);
+        }
+
+        .action-btn {
+            padding: 6px 10px;
+            font-size: 0.85em;
+            margin: 2px;
+        }
+        .approve-btn {
+            background-color: var(--active-menu-item);
+            color: white;
+        }
+        .approve-btn:hover {
+            background-color: #3E8A22;
+        }
+        .reject-btn {
+            background-color: #D64545; /* Red for reject */
+            color: white;
+        }
+        .reject-btn:hover {
+            background-color: #C0392B;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .data-table th,
+        .data-table td {
+            border: 1px solid var(--border-color);
+            padding: 10px;
+            text-align: left;
+            white-space: nowrap;
+            color: var(--text-color);
+        }
+
+        .data-table th {
+            background-color: var(--sidebar-bg);
+            color: var(--brown-text-contrast);
+            font-weight: bold;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #2A362E;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: var(--sidebar-hover);
+        }
+
+        .status-pending { color: orange; font-weight: bold; }
+        .status-approved { color: var(--active-menu-item); font-weight: bold; }
+        .status-rejected { color: #D64545; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3 class="section-title">반납 신청 이력 확인 및 승인/거부</h3>
+        <p class="info-text">이 페이지는 반납 신청 이력을 확인하고 승인 또는 거부할 수 있습니다. **현재 표시되는 데이터는 예시 데이터입니다.**</p>
+
+        <div class="filter-section">
+            <label for="filterDate">날짜:</label>
+            <input type="date" id="filterDate">
+            <label for="filterStatus">상태:</label>
+            <select id="filterStatus">
+                <option value="all">전체</option>
+                <option value="pending">대기</option>
+                <option value="approved">승인</option>
+                <option value="rejected">거부</option>
+            </select>
+            <button id="loadRequestsBtn" class="btn load-btn">조회</button>
+        </div>
+
+        <div class="table-container">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>신청 번호</th>
+                        <th>신청 일자</th>
+                        <th>반납 품목</th>
+                        <th>수량</th>
+                        <th>신청자</th>
+                        <th>현재 상태</th>
+                        <th>조치</th>
+                    </tr>
+                </thead>
+                <tbody id="returnRequestsTableBody">
+                    </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function initManagementReturnApproval() {
+            const filterDateInput = document.getElementById('filterDate');
+            const filterStatusSelect = document.getElementById('filterStatus');
+            const loadRequestsBtn = document.getElementById('loadRequestsBtn');
+            const tableBody = document.getElementById('returnRequestsTableBody');
+
+            // 샘플 데이터
+            const sampleReturnRequests = [
+                { id: 'R001', date: '2025-07-15', item: 'K2 소총', quantity: 5, applicant: '김철수 병장', status: 'pending' },
+                { id: 'R002', date: '2025-07-15', item: 'K1A 기관단총', quantity: 2, applicant: '이영희 하사', status: 'approved' },
+                { id: 'R003', date: '2025-07-16', item: 'K3 기관총', quantity: 1, applicant: '박민수 중사', status: 'pending' },
+                { id: 'R004', date: '2025-07-16', item: '수류탄', quantity: 10, applicant: '최지훈 상병', status: 'rejected' },
+                { id: 'R005', date: '2025-07-17', item: '방독면', quantity: 3, applicant: '정우성 일병', status: 'pending' },
+                { id: 'R006', date: '2025-07-17', item: '탄약통', quantity: 20, applicant: '김철수 병장', status: 'pending' },
+            ];
+
+            // 오늘 날짜로 기본값 설정
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            filterDateInput.value = `${year}-${month}-${day}`;
+
+            function renderTable(requests) {
+                tableBody.innerHTML = '';
+                if (requests.length === 0) {
+                    const row = tableBody.insertRow();
+                    const cell = row.insertCell();
+                    cell.colSpan = 7;
+                    cell.textContent = '조회된 반납 신청 이력이 없습니다.';
+                    cell.style.textAlign = 'center';
+                    cell.style.padding = '20px';
+                    cell.style.color = '#777';
+                    return;
+                }
+
+                requests.forEach(request => {
+                    const row = tableBody.insertRow();
+                    row.insertCell().textContent = request.id;
+                    row.insertCell().textContent = request.date;
+                    row.insertCell().textContent = request.item;
+                    row.insertCell().textContent = request.quantity;
+                    row.insertCell().textContent = request.applicant;
+
+                    const statusCell = row.insertCell();
+                    statusCell.textContent = {
+                        'pending': '대기',
+                        'approved': '승인',
+                        'rejected': '거부'
+                    }[request.status];
+                    statusCell.classList.add(`status-${request.status}`);
+
+                    const actionCell = row.insertCell();
+                    if (request.status === 'pending') {
+                        const approveBtn = document.createElement('button');
+                        approveBtn.textContent = '승인';
+                        approveBtn.classList.add('btn', 'action-btn', 'approve-btn');
+                        approveBtn.onclick = () => handleAction(request.id, 'approved');
+
+                        const rejectBtn = document.createElement('button');
+                        rejectBtn.textContent = '거부';
+                        rejectBtn.classList.add('btn', 'action-btn', 'reject-btn');
+                        rejectBtn.onclick = () => handleAction(request.id, 'rejected');
+
+                        actionCell.appendChild(approveBtn);
+                        actionCell.appendChild(rejectBtn);
+                    } else {
+                        actionCell.textContent = '완료';
+                        actionCell.style.color = '#777';
+                    }
+                });
+            }
+
+            function handleAction(id, newStatus) {
+                alert(`${id} 항목을 ${newStatus === 'approved' ? '승인' : '거부'} 처리했습니다. (실제 데이터는 변경되지 않습니다.)`);
+                // 실제 백엔드 연동 시 여기에 API 호출 로직 추가
+                // 여기서는 샘플 데이터의 상태를 변경하고 테이블을 다시 렌더링
+                const index = sampleReturnRequests.findIndex(req => req.id === id);
+                if (index !== -1) {
+                    sampleReturnRequests[index].status = newStatus;
+                    filterAndRenderRequests(); // 상태 변경 후 다시 필터링 및 렌더링
+                }
+            }
+
+            function filterAndRenderRequests() {
+                const selectedDate = filterDateInput.value;
+                const selectedStatus = filterStatusSelect.value;
+
+                let filteredRequests = sampleReturnRequests.filter(request => {
+                    const matchesDate = (selectedDate === '' || request.date === selectedDate);
+                    const matchesStatus = (selectedStatus === 'all' || request.status === selectedStatus);
+                    return matchesDate && matchesStatus;
+                });
+                renderTable(filteredRequests);
+            }
+
+            // 초기 로드 시 데이터 표시
+            filterAndRenderRequests();
+
+            loadRequestsBtn.addEventListener('click', filterAndRenderRequests);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DASMS 로그인</title>
+    <style>
+        /* CSS Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Variables for Colors */
+        :root {
+            --body-bg: #1F2B24;
+            --input-bg: #2F3B33;
+            --text-color: #E6E6E6;
+            --button-color: #4C9A2A;
+            --button-hover-color: #6FBF4B;
+            --border-color: #4A5C50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--body-bg);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px; /* Add some padding for smaller screens */
+        }
+
+        .login-container {
+            background-color: var(--body-bg); /* Use body background for container to blend */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .logo-section {
+            margin-bottom: 30px;
+        }
+
+        .logo-section h1 {
+            font-size: 2.5em;
+            color: var(--text-color);
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .logo-section p {
+            font-size: 1.1em;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            text-align: left;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+            color: var(--text-color);
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 15px;
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-color);
+            font-size: 1em;
+            outline: none; /* Remove default focus outline */
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            border-color: var(--button-color); /* Highlight on focus */
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 15px;
+            background-color: var(--button-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+        }
+
+        .login-button:hover {
+            background-color: var(--button-hover-color);
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+
+        .login-button:active {
+            transform: translateY(0); /* Press effect */
+        }
+
+        .message {
+            margin-top: 20px;
+            color: #ff6b6b; /* A subtle error color */
+            font-size: 0.9em;
+            height: 20px; /* Reserve space to prevent layout shift */
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <img src="logo.png" alt="DASMS Logo" style="max-width: 100px; height: auto; margin-bottom: 15px;">
+            <h1>DASMS</h1>
+            <p>Defense Armament Smart Management System</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <input type="text" id="username" placeholder="아이디" required>
+            </div>
+            <div class="input-group">
+                <input type="password" id="password" placeholder="비밀번호" required>
+            </div>
+            <button type="submit" class="login-button">로그인</button>
+        </form>
+        <div id="loginMessage" class="message"></div>
+    </div>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+        const messageDiv = document.getElementById('loginMessage');
+
+        // Simple validation example
+        if (username === 'admin' && password === 'admin12') { // 관리자 계정
+            messageDiv.style.color = '#4CAF50'; // Green for success
+            messageDiv.textContent = '로그인 성공! 대시보드로 이동합니다...';
+            sessionStorage.setItem('userRole', 'admin'); // 관리자 권한 저장
+            window.location.href = 'main_page.html'; // main_page.html로 리디렉션
+        } else if (username === 'user' && password === 'user12') { // 일반 사용자 계정 (임시)
+            messageDiv.style.color = '#4CAF50';
+            messageDiv.textContent = '로그인 성공! 대시보드로 이동합니다...';
+            sessionStorage.setItem('userRole', 'user'); // 일반 사용자 권한 저장
+            window.location.href = 'main_page_user.html'; // main_page.html로 리디렉션
+        }
+        else {
+            messageDiv.style.color = '#ff6b6b'; // Red for error
+            messageDiv.textContent = '아이디 또는 비밀번호가 올바르지 않습니다.';
+        }
+    });
+</script>
+</body>
+</html>

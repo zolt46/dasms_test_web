@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>인원 현황</title>
+    <style>
+        /* 기본 스타일 */
+        .section-title {
+            color: var(--active-menu-item); /* 초록색 강조 */
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--brown-accent);
+        }
+
+        p {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* resources_firearm.html, resources_ammo.html, resources_person.html, management_breakdown.html 에 적용 */
+        .table-container-scroll {
+            width: 100%; /* 부모 요소의 전체 너비 사용 */
+            /* max-width: 1400px; /* 필요하다면, 특정 최대 너비를 지정하여 너무 넓어지는 것을 방지 */
+            overflow-x: auto;
+            margin-top: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%; /* 너비를 100%로 설정하여 컨테이너에 맞춤 */
+            min-width: 1200px; /* 테이블 최소 너비 지정 (내용이 많을 경우) */
+            border-collapse: collapse;
+            color: var(--text-color);
+            font-size: 0.9em; /* 테이블 전체 폰트 크기 감소 */
+        }
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 8px; /* 패딩 감소 */
+            text-align: left;
+            white-space: nowrap; /* 내용이 길어도 줄바꿈되지 않도록 (가로 스크롤 유도) */
+        }
+        th {
+            background-color: var(--sidebar-bg);
+            font-weight: bold;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        /* 각 컬럼의 최소 너비를 조정하여 더 압축적으로 만듭니다. */
+        th:nth-child(1), td:nth-child(1) { min-width: 70px; } /* 이름 */
+        th:nth-child(2), td:nth-child(2) { min-width: 60px; } /* 계급 */
+        th:nth-child(3), td:nth-child(3) { min-width: 100px; } /* 군번 */
+        th:nth-child(4), td:nth-child(4) { min-width: 80px; }  /* 소속 */
+        th:nth-child(5), td:nth-child(5) { min-width: 80px; }  /* 직책 */
+        th:nth-child(6), td:nth-child(6) { min-width: 80px; }  /* 아이디 */
+        th:nth-child(7), td:nth-child(7) { min-width: 80px; }  /* 비번 (마스킹) */
+        th:nth-child(8), td:nth-child(8) { min-width: 120px; text-align: center; } /* 관리자모드 허가 여부 */
+        th:nth-child(9), td:nth-child(9) { min-width: 120px; } /* 연락처 */
+        th:nth-child(10), td:nth-child(10) { min-width: 120px; } /* 최종 접속일 */
+        th:nth-child(11), td:nth-child(11) { min-width: 150px; } /* 비고 */
+
+        tr:nth-child(even) {
+            background-color: rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <h3 class="section-title">👤 인원 현황</h3>
+    <p>현재 부대의 인원 목록 및 주요 정보를 관리합니다.</p>
+
+    <div class="table-container-scroll">
+        <table>
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>계급</th>
+                    <th>군번</th>
+                    <th>소속</th>
+                    <th>직책</th>
+                    <th>아이디</th>
+                    <th>비번</th>
+                    <th>관리자모드 허가 여부</th>
+                    <th>연락처</th>
+                    <th>최종 접속일</th>
+                    <th>비고</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>김민수</td>
+                    <td>병장</td>
+                    <td>18-12345678</td>
+                    <td>본부중대</td>
+                    <td>행정병</td>
+                    <td>kimms</td>
+                    <td>Masked</td>
+                    <td>허용 안함</td>
+                    <td>010-1234-5678</td>
+                    <td>2025-07-17</td>
+                    <td>특이사항 없음</td>
+                </tr>
+                <tr>
+                    <td>박준영</td>
+                    <td>하사</td>
+                    <td>15-98765432</td>
+                    <td>1소대</td>
+                    <td>분대장</td>
+                    <td>parkjy</td>
+                    <td>Masked</td>
+                    <td>허용</td>
+                    <td>010-9876-5432</td>
+                    <td>2025-07-15</td>
+                    <td>신임 분대장</td>
+                </tr>
+                <tr>
+                    <td>이지은</td>
+                    <td>중위</td>
+                    <td>10-11223344</td>
+                    <td>본부중대</td>
+                    <td>인사담당</td>
+                    <td>leeje</td>
+                    <td>Masked</td>
+                    <td>허용</td>
+                    <td>010-2233-4455</td>
+                    <td>2025-07-18</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>강하늘</td>
+                    <td>일병</td>
+                    <td>19-23456789</td>
+                    <td>2소대</td>
+                    <td>소총수</td>
+                    <td>kanghn</td>
+                    <td>Masked</td>
+                    <td>허용 안함</td>
+                    <td>010-3344-5566</td>
+                    <td>2025-07-16</td>
+                    <td>총기교육 이수</td>
+                </tr>
+                <tr>
+                    <td>윤도현</td>
+                    <td>상사</td>
+                    <td>05-87654321</td>
+                    <td>3소대</td>
+                    <td>행정보급관</td>
+                    <td>yoonsh</td>
+                    <td>Masked</td>
+                    <td>허용</td>
+                    <td>010-4455-6677</td>
+                    <td>2025-07-17</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>서지혜</td>
+                    <td>이병</td>
+                    <td>20-34567890</td>
+                    <td>본부중대</td>
+                    <td>취사병</td>
+                    <td>seojh</td>
+                    <td>Masked</td>
+                    <td>허용 안함</td>
+                    <td>010-5566-7788</td>
+                    <td>2025-07-18</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
